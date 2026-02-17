@@ -171,22 +171,22 @@ exp3:
 	)?;
 
 exp4:
-	exp5 ('+' exp5 | '-' exp5)*;
+	exp5 ('+' exp5 {PtGen.pt(4)}| '-' exp5 {PtGen.pt(5);})*;
 
 exp5:
-	primaire ('*' primaire | 'div' primaire)*;
+	primaire ('*' primaire {PtGen.pt(6);}| 'div' primaire {PtGen.pt(7);})*;
 
 primaire:
-	valeur
+	valeur{PtGen.pt(1);}
 	| ident
 	| '(' expression ')';
 
 valeur:
-	nbentier
-	| '+' nbentier
-	| '-' nbentier
-	| 'vrai'
-	| 'faux';
+	nbentier {PtGen.pt(2);}
+	| '+' nbentier {PtGen.pt(2);}
+	| '-' nbentier {PtGen.pt(2);}
+	| 'vrai' {PtGen.pt(3);}
+	| 'faux'{PtGen.pt(3);};
 
 /*
  * Partie lexicale  : cette partie ne doit pas être modifiée

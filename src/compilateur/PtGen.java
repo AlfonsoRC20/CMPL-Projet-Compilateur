@@ -205,7 +205,35 @@ public class PtGen {
 				break;
 
 			// TODO
-
+			case 1:
+				po.produire(EMPILER);
+				po.produire(vCour);
+				break;
+			case 2:
+				tCour = ENT;
+				break;
+			case 3:
+				tCour = BOOL;
+				break;
+			case 4: // addition
+				po.produire(ADD);
+				break;
+			case 5:// soustraction
+				po.produire(SOUS);
+				break;
+			case 6: // multiplication
+				po.produire(MUL);
+				break;
+			case 7: //division
+				po.produire(DIV);
+				break;
+			case 11:
+				verifBool();
+				break;
+			case 12: 
+				verifEnt();
+				break;
+			
 			case 255:
 				// En fin de compilation :
 				// - création des fichiers contenant le code produit (exécutable et mnémonique)
