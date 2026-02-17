@@ -215,25 +215,71 @@ public class PtGen {
 			case 3:
 				tCour = BOOL;
 				break;
-			case 4: // addition
+			case 4:// gestion ident
+
+			case 5: // addition
 				po.produire(ADD);
 				break;
-			case 5:// soustraction
+			case 6:// soustraction
 				po.produire(SOUS);
 				break;
-			case 6: // multiplication
+			case 7: // multiplication
 				po.produire(MUL);
 				break;
-			case 7: //division
+			case 8: //division
 				po.produire(DIV);
 				break;
-			case 11:
+			case 9: // '='
+				po.produire(EG);
+				tCour = BOOL;
+				break;
+			case 10: // '<>'
+				po.produire(DIFF);
+				tCour = BOOL;
+				break;
+			case 11: // '>'
+				po.produire(SUP);
+				tCour = BOOL;
+				break;
+			case 12:// '>='
+				po.produire(SUPEG);
+				tCour = BOOL;
+				break;
+			case 13:// '<'
+				po.produire(INF);
+				tCour = BOOL;
+				break;
+			case 14:// '<='
+				po.produire(INFEG);
+				tCour = BOOL;
+				break;
+			case 15:
 				verifBool();
 				break;
-			case 12: 
+			case 16: 
 				verifEnt();
 				break;
-			
+			case 17: // gestion du OU
+				po.produire(OU);
+				break;
+			case 18:// gestion du ET
+				po.produire(ET);
+				break;
+			case 19:// gestion du non
+				po.produire(NON);
+				break;
+			case 20:// entier positif
+				vCour = 0 + vCour;
+				break;
+			case 21:// entier négatif
+				vCour = -vCour;
+				break;
+			case 22:
+				vCour = FAUX;
+				break;
+			case 23:
+				vCour = VRAI;
+				break;
 			case 255:
 				// En fin de compilation :
 				// - création des fichiers contenant le code produit (exécutable et mnémonique)

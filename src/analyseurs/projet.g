@@ -151,42 +151,42 @@ effixes:
 effmods:
 	'(' (ident (',' ident)*)? ')';
 
-expression: (exp1) ('ou' exp1)*;
+expression: (exp1) ({PtGen.pt(15);}'ou' exp1 {PtGen.pt(15);} {PtGen.pt(17);})*;
 
 exp1:
-	exp2 ('et' exp2)*;
+	exp2 ({PtGen.pt(15);}'et' exp2{PtGen.pt(15);} {PtGen.pt(18);})*;
 
 exp2:
-	'non' exp2
+	'non' exp2 {PtGen.pt(15);} {PtGen.pt(19);}
 	| exp3;
 
 exp3:
-	exp4 (
-		'=' exp4
-		| '<>' exp4
-		| '>' exp4
-		| '>=' exp4
-		| '<' exp4
-		| '<=' exp4
+	exp4 ({PtGen.pt(16);}
+		'=' exp4 {PtGen.pt(16);}{PtGen.pt(9);}
+		|{PtGen.pt(16);} '<>' exp4 {PtGen.pt(16);}{PtGen.pt(10);}
+		|{PtGen.pt(16);} '>' exp4 {PtGen.pt(16);}{PtGen.pt(11);}
+		|{PtGen.pt(16);} '>=' exp4 {PtGen.pt(16);}{PtGen.pt(12);}
+		|{PtGen.pt(16);} '<' exp4 {PtGen.pt(16);}{PtGen.pt(13);}
+		|{PtGen.pt(16);} '<=' exp4 {PtGen.pt(16);}{PtGen.pt(14);}
 	)?;
 
 exp4:
-	exp5 ('+' exp5 {PtGen.pt(4)}| '-' exp5 {PtGen.pt(5);})*;
+	exp5 ({PtGen.pt(16);}'+' exp5 {PtGen.pt(16);}{PtGen.pt(5)}|{PtGen.pt(16);} '-' exp5 {PtGen.pt(16);}{PtGen.pt(6);})*;
 
 exp5:
-	primaire ('*' primaire {PtGen.pt(6);}| 'div' primaire {PtGen.pt(7);})*;
+	primaire ({PtGen.pt(16);}'*' primaire {PtGen.pt(16);} {PtGen.pt(7);}| {PtGen.pt(16);}'div' primaire {PtGen.pt(16);}{PtGen.pt(8);})*;
 
 primaire:
 	valeur{PtGen.pt(1);}
-	| ident
+	| ident {PtGen.pt(4);}
 	| '(' expression ')';
 
 valeur:
 	nbentier {PtGen.pt(2);}
-	| '+' nbentier {PtGen.pt(2);}
-	| '-' nbentier {PtGen.pt(2);}
-	| 'vrai' {PtGen.pt(3);}
-	| 'faux'{PtGen.pt(3);};
+	| '+' nbentier {PtGen.pt(2);} {PtGen.pt(20);}
+	| '-' nbentier {PtGen.pt(2);} {PtGen.pt(21);}
+	| 'vrai' {PtGen.pt(3);} {PtGen.pt(22);}
+	| 'faux'{PtGen.pt(3);} {PtGen.pt(23);};
 
 /*
  * Partie lexicale  : cette partie ne doit pas être modifiée
