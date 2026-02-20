@@ -353,14 +353,14 @@ public class PtGen {
 				po.produire(BINCOND);
 				po.produire(pileRep.depiler());
 				po.modifier(repbsif, po.getIpo()+1);
-			case 40:
+			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
 				if (idIdent == 0) {
 					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" n'est pas déclaré");
 					break;
 				}
 				break;
-			case 41:
+			case 41://affectation
 				if(tabSymb[idIdent].categorie == CONSTANTE){
 					UtilLex.messErr("une constante ne pas être modifier");
 					break;
