@@ -59,7 +59,7 @@ public class PtGen {
 	// contrôle de type : type de l'expression compilee
 	private static int tCour;
 
-	private static int nbrVarGlobale;
+	private static int nbrVarGlobale,idIdent;
 
 	// TABLE DES SYMBOLES
 	// ----------------------
@@ -296,6 +296,7 @@ public class PtGen {
 				tmp = presentIdent(1);
 				if (tabSymb[tmp].categorie == CONSTANTE) {
 					UtilLex.messErr("une constante ne pas être modifier");
+					break;
 				}else if (tabSymb[tmp].type == ENT) {
 					po.produire(LIRENT);
 				}else{
@@ -311,12 +312,12 @@ public class PtGen {
 				break;
 			case 26:// gestion des constantes
 				if(presentIdent(1)!=0){
-					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja ");
 				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
 				break;
 			case 27://gestion des variables dans la table des symboles
 				if (presentIdent(1)!=0) {
-					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
 				}else {
 					placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, nbrVarGlobale);
 					nbrVarGlobale ++;
@@ -328,6 +329,42 @@ public class PtGen {
 				break;
 			case 29://entier quelconque
 				vCour = UtilLex.valEnt;
+				break;
+			case 30: // empilement en pile reprise de l'adresse de la prochaine instruction a generer
+                po.produire(BSIFAUX);
+                po.produire(-1); // adresse de reprise a completer plus tard
+                pileRep.empiler(po.getIpo());
+                break;
+            case 31: // gestion du sinon
+                po.produire(BINCOND);
+                po.produire(-1);
+                int adresseReprise = pileRep.depiler();
+                pileRep.empiler(po.getIpo());
+                po.modifier(adresseReprise, po.getIpo());
+                break;
+            case 32: // depilement de & reprise et modification du code de addresse de reprise
+                    po.modifier(pileRep.depiler(), po.getIpo());
+                    break;
+			case 40:
+				idIdent = presentIdent(1);
+				if (idIdent == 0) {
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" n'est pas déclaré");
+					break;
+				}
+				break;
+			case 41:
+				if(tabSymb[idIdent].categorie == CONSTANTE){
+					UtilLex.messErr("une constante ne pas être modifier");
+					break;
+				}else{
+					po.produire(EMPILER);
+					po.produire(vCour);
+					po.produire(AFFECTERG);
+					po.produire(tabSymb[idIdent].info);
+				}
+				break;
+			case 254://fin de corps
+				po.produire(ARRET);
 				break;
 			case 255:
 				// En fin de compilation :

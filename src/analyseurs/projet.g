@@ -99,7 +99,7 @@ ptvg:
 	|;
 
 corps:
-	'debut' instructions 'fin';
+	'debut' instructions 'fin'{PtGen.pt(254);};
 
 parfixe:
 	'fixe' '(' pf (';' pf)* ')';
@@ -126,7 +126,7 @@ instruction:
 	|;
 
 inssi:
-	'si' expression 'alors' instructions ('sinon' instructions)? 'fsi';
+	'si' expression {PtGen.pt(30);}'alors' instructions ('sinon'{PtGen.pt(31);} instructions)? 'fsi'{PtGen.pt(32);};
 
 inscond:
 	'cond' expression ':' instructions (
@@ -143,7 +143,7 @@ ecriture:
 	'ecrire' '(' expression {PtGen.pt(25);}(',' expression{PtGen.pt(25);})* ')';
 
 affouappel:
-	ident (':=' expression | (effixes (effmods)?)?);
+	ident {PtGen.pt(40);} (':=' expression {PtGen.pt(41);}| (effixes (effmods)?)?);
 
 effixes:
 	'(' (expression (',' expression)*)? ')';
