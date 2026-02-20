@@ -345,6 +345,14 @@ public class PtGen {
             case 32: // depilement de & reprise et modification du code de addresse de reprise
                     po.modifier(pileRep.depiler(), po.getIpo()+1);
                     break;
+			case 33: // emiler ipo +1
+				pileRep.empiler(po.getIpo()+1);
+				break;
+			case 34:
+				int repbsif = pileRep.depiler();
+				po.produire(BINCOND);
+				po.produire(pileRep.depiler());
+				po.modifier(repbsif, po.getIpo()+1);
 			case 40:
 				idIdent = presentIdent(1);
 				if (idIdent == 0) {
