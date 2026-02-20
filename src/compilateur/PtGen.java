@@ -1,5 +1,7 @@
 package compilateur;
 
+import org.antlr.grammar.v3.ANTLRParser.elementNoOptionSpec_return;
+
 import analyseurs.UtilLex;
 import edl.*;
 import libIO.*;
@@ -56,6 +58,8 @@ public class PtGen {
 
 	// contrôle de type : type de l'expression compilee
 	private static int tCour;
+
+	private static int nbrVarGlobale;
 
 	// TABLE DES SYMBOLES
 	// ----------------------
@@ -188,6 +192,7 @@ public class PtGen {
 		tCour = NEUTRE;
 
 		// TODO si necessaire
+		nbrVarGlobale = 0;
 
 	}
 
@@ -198,7 +203,7 @@ public class PtGen {
 	 * @param numGen : numero du point de generation a executer
 	 */
 	public static void pt(int numGen) {
-
+		int tmp;
 		switch (numGen) {
 			case 0:
 				initialisations();
@@ -215,8 +220,17 @@ public class PtGen {
 			case 3:
 				tCour = BOOL;
 				break;
-			case 4:// gestion ident
-
+			case 4://empilement de la valeur de la constante ou de la variable
+				tmp = presentIdent(1);
+				if (tabSymb[tmp].categorie == CONSTANTE) {
+					po.produire(EMPILER);
+					po.produire(tabSymb[tmp].info);
+				} else {
+					po.produire(CONTENUG);
+					po.produire(tabSymb[tmp].info);
+				}
+				tCour = tabSymb[tmp].type;
+				break;
 			case 5: // addition
 				po.produire(ADD);
 				break;
@@ -253,10 +267,10 @@ public class PtGen {
 				po.produire(INFEG);
 				tCour = BOOL;
 				break;
-			case 15:
+			case 15:// vérification boolean
 				verifBool();
 				break;
-			case 16: 
+			case 16:// verification entier
 				verifEnt();
 				break;
 			case 17: // gestion du OU
@@ -279,6 +293,40 @@ public class PtGen {
 				break;
 			case 23:
 				vCour = VRAI;
+				break;
+			case 24:// gestion du lire
+				tmp = presentIdent(1);
+				if (tabSymb[tmp].categorie == CONSTANTE) {
+					UtilLex.messErr("une constante ne pas être modifier");
+				}else if (tabSymb[tmp].type == ENT) {
+					po.produire(LIRENT);
+				}else{
+					po.produire(LIREBOOL);
+				}
+				po.produire(AFFECTERG);
+				po.produire(tabSymb[tmp].info);
+				break;
+			case 25:// gestion du ecrire
+				if (tCour == ENT) {
+					po.produire(ECRENT);
+				}else po.produire(ECRBOOL);
+				break;
+			case 26:// gestion des constantes
+				if(presentIdent(1)!=0){
+					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
+				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, UtilLex.valEnt);
+				break;
+			case 27://gestion des variables
+				if (presentIdent(1)!=0) {
+					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
+				}else {
+					placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, nbrVarGlobale);
+					nbrVarGlobale ++;
+				}
+				break;
+			case 28:// gestion des variables
+				po.produire(RESERVER);
+				po.produire(nbrVarGlobale);
 				break;
 			case 255:
 				// En fin de compilation :

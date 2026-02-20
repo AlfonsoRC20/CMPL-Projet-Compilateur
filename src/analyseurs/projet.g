@@ -80,14 +80,14 @@ specif:
 	)?;
 
 consts:
-	'const' (ident '=' valeur ptvg)+;
+	'const' (ident '=' valeur {PtGen.pt(26);} ptvg)+;
 
 vars:
-	'var' (type ident ( ',' ident)* ptvg)+;
+	'var' (type ident {PtGen.pt(27);}( ',' ident {PtGen.pt(27);})* ptvg)+ {PtGen.pt(28);};
 
 type:
-	'ent'
-	| 'bool';
+	'ent'{PtGen.pt(2);}
+	| 'bool'{PtGen.pt(3);};
 
 decprocs: (decproc ptvg)+;
 
@@ -137,10 +137,10 @@ boucle:
 	'ttq' expression 'faire' instructions 'fait';
 
 lecture:
-	'lire' '(' ident (',' ident)* ')';
+	'lire' '(' ident {PtGen.pt(24);}(',' ident{PtGen.pt(24);})* ')';
 
 ecriture:
-	'ecrire' '(' expression (',' expression)* ')';
+	'ecrire' '(' expression {PtGen.pt(25);}(',' expression{PtGen.pt(25);})* ')';
 
 affouappel:
 	ident (':=' expression | (effixes (effmods)?)?);
@@ -171,7 +171,7 @@ exp3:
 	)?;
 
 exp4:
-	exp5 ({PtGen.pt(16);}'+' exp5 {PtGen.pt(16);}{PtGen.pt(5)}|{PtGen.pt(16);} '-' exp5 {PtGen.pt(16);}{PtGen.pt(6);})*;
+	exp5 ({PtGen.pt(16);}'+' exp5 {PtGen.pt(16);}{PtGen.pt(5);}|{PtGen.pt(16);} '-' exp5 {PtGen.pt(16);}{PtGen.pt(6);})*;
 
 exp5:
 	primaire ({PtGen.pt(16);}'*' primaire {PtGen.pt(16);} {PtGen.pt(7);}| {PtGen.pt(16);}'div' primaire {PtGen.pt(16);}{PtGen.pt(8);})*;
