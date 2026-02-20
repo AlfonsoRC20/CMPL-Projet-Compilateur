@@ -281,10 +281,10 @@ public class PtGen {
 				po.produire(NON);
 				break;
 			case 20:// entier positif
-				vCour = 0 + vCour;
+				vCour = 0 + UtilLex.valEnt;
 				break;
 			case 21:// entier négatif
-				vCour = -vCour;
+				vCour = -UtilLex.valEnt;
 				break;
 			case 22:
 				vCour = FAUX;
@@ -312,7 +312,7 @@ public class PtGen {
 			case 26:// gestion des constantes
 				if(presentIdent(1)!=0){
 					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
-				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, UtilLex.valEnt);
+				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
 				break;
 			case 27://gestion des variables dans la table des symboles
 				if (presentIdent(1)!=0) {
@@ -326,8 +326,8 @@ public class PtGen {
 				po.produire(RESERVER);
 				po.produire(nbrVarGlobale);
 				break;
-			case 29:
-				
+			case 29://entier quelconque
+				vCour = UtilLex.valEnt;
 				break;
 			case 255:
 				// En fin de compilation :

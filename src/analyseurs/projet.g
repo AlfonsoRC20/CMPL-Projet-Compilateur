@@ -182,7 +182,7 @@ primaire:
 	| '(' expression ')';
 
 valeur:
-	nbentier {PtGen.pt(2);}
+	nbentier {PtGen.pt(2);} {PtGen.pt(29);}
 	| '+' nbentier {PtGen.pt(2);} {PtGen.pt(20);}
 	| '-' nbentier {PtGen.pt(2);} {PtGen.pt(21);}
 	| 'vrai' {PtGen.pt(3);} {PtGen.pt(22);}

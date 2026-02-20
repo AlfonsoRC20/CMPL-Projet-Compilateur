@@ -1,0 +1,7 @@
+FICHIER testperso\premiertests.gen : 
+
+   1  reserver        4
+   3  empiler         0
+   5  ecrent    
+   6  empiler       -12
+   8  ecrent    
