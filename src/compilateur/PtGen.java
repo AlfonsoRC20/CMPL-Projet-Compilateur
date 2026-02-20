@@ -340,10 +340,10 @@ public class PtGen {
                 po.produire(-1);
                 int adresseReprise = pileRep.depiler();
                 pileRep.empiler(po.getIpo());
-                po.modifier(adresseReprise, po.getIpo());
+                po.modifier(adresseReprise, po.getIpo()+1);
                 break;
             case 32: // depilement de & reprise et modification du code de addresse de reprise
-                    po.modifier(pileRep.depiler(), po.getIpo());
+                    po.modifier(pileRep.depiler(), po.getIpo()+1);
                     break;
 			case 40:
 				idIdent = presentIdent(1);
@@ -357,8 +357,6 @@ public class PtGen {
 					UtilLex.messErr("une constante ne pas être modifier");
 					break;
 				}else{
-					po.produire(EMPILER);
-					po.produire(vCour);
 					po.produire(AFFECTERG);
 					po.produire(tabSymb[idIdent].info);
 				}

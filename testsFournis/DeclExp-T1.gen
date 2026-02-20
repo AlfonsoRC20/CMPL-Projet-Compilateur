@@ -1,0 +1,50 @@
+FICHIER testsFournis\DeclExp-T1.gen : 
+
+   1  reserver        5
+   3  empiler        77
+   5  empiler         7
+   7  sous      
+   8  empiler         2
+  10  div       
+  11  empiler         2
+  13  affecterg       0
+  15  empiler         0
+  17  empiler         1
+  19  et        
+  20  empiler         2
+  22  affecterg       2
+  24  contenug        2
+  26  non       
+  27  empiler         0
+  29  empiler         1
+  31  ou        
+  32  et        
+  33  empiler         2
+  35  affecterg       3
+  37  contenug        0
+  39  empiler         5
+  41  add       
+  42  empiler        10
+  44  mul       
+  45  empiler        10
+  47  affecterg       1
+  49  contenug        0
+  51  contenug        1
+  53  infeg     
+  54  contenug        0
+  56  empiler        10
+  58  diff      
+  59  ou        
+  60  empiler        10
+  62  affecterg       4
+  64  contenug        0
+  66  ecrent    
+  67  contenug        1
+  69  ecrent    
+  70  contenug        2
+  72  ecrbool   
+  73  contenug        3
+  75  ecrbool   
+  76  contenug        4
+  78  ecrbool   
+  79  arret     
