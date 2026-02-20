@@ -208,8 +208,6 @@ public class PtGen {
 			case 0:
 				initialisations();
 				break;
-
-			// TODO
 			case 1:
 				po.produire(EMPILER);
 				po.produire(vCour);
@@ -316,7 +314,7 @@ public class PtGen {
 					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
 				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, UtilLex.valEnt);
 				break;
-			case 27://gestion des variables
+			case 27://gestion des variables dans la table des symboles
 				if (presentIdent(1)!=0) {
 					UtilLex.messErr(UtilLex.numIdCourant+"est déja présent dans tabsymbole");
 				}else {
@@ -324,9 +322,12 @@ public class PtGen {
 					nbrVarGlobale ++;
 				}
 				break;
-			case 28:// gestion des variables
+			case 28:// gestion des variables (reserver nbr)
 				po.produire(RESERVER);
 				po.produire(nbrVarGlobale);
+				break;
+			case 29:
+				
 				break;
 			case 255:
 				// En fin de compilation :
