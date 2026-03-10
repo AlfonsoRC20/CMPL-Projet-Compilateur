@@ -129,9 +129,9 @@ inssi:
 	'si' expression {PtGen.pt(30);}'alors' instructions ('sinon'{PtGen.pt(31);} instructions)? 'fsi'{PtGen.pt(32);};
 
 inscond:
-	'cond' expression ':' instructions (
-		',' expression ':' instructions
-	)* ('aut' instructions |) 'fcond';
+	'cond' {PtGen.pt(35);} expression {PtGen.pt(30);}':' instructions (
+		','{PtGen.pt(36);} expression {PtGen.pt(30);}':' instructions
+	)* ('aut' {PtGen.pt(36);} instructions |) 'fcond'{PtGen.pt(37);};
 
 boucle:
 	'ttq'{PtGen.pt(33);} expression {PtGen.pt(30);}'faire' instructions {PtGen.pt(34);}'fait';

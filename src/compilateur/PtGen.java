@@ -204,6 +204,7 @@ public class PtGen {
 	 */
 	public static void pt(int numGen) {
 		int tmp;
+		int repbsif;
 		switch (numGen) {
 			case 0:
 				initialisations();
@@ -330,6 +331,7 @@ public class PtGen {
 			case 29://entier quelconque
 				vCour = UtilLex.valEnt;
 				break;
+	// gestion du si
 			case 30: // empilement en pile reprise de l'adresse de la prochaine instruction a generer
                 po.produire(BSIFAUX);
                 po.produire(-1); // adresse de reprise a completer plus tard
@@ -345,14 +347,36 @@ public class PtGen {
             case 32: // depilement de & reprise et modification du code de addresse de reprise
                     po.modifier(pileRep.depiler(), po.getIpo()+1);
                     break;
+	//gestion du tant que
 			case 33: // emiler ipo +1
 				pileRep.empiler(po.getIpo()+1);
 				break;
 			case 34:
-				int repbsif = pileRep.depiler();
+				repbsif = pileRep.depiler();
 				po.produire(BINCOND);
 				po.produire(pileRep.depiler());
 				po.modifier(repbsif, po.getIpo()+1);
+				break;
+	//gestion du cond///
+			case 35:
+				pileRep.empiler(0);
+				break;
+			case 36:
+				repbsif = pileRep.depiler();
+				po.produire(BINCOND);
+				po.produire(pileRep.depiler());
+				pileRep.empiler(po.getIpo());
+				po.modifier(repbsif, po.getIpo()+1);
+				break;
+			case 37:
+				int ipo =po.getIpo()+1;
+				int adresse = pileRep.depiler();
+				do {
+					tmp = po.getElt(adresse);
+					po.modifier(adresse, ipo);
+					adresse = tmp;
+				} while (adresse > 0);
+				break;
 			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
 				if (idIdent == 0) {
@@ -381,7 +405,6 @@ public class PtGen {
 				po.constGen();
 				afftabSymb();
 				break;
-
 			default:
 				System.out.println("Point de generation non prevu dans votre liste");
 				break;
