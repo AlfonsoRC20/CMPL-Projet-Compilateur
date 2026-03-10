@@ -362,20 +362,24 @@ public class PtGen {
 				pileRep.empiler(0);
 				break;
 			case 36:
-				repbsif = pileRep.depiler();
+				int adrBsifauxReme = pileRep.depiler(); 
+				int adrAncienBincond = pileRep.depiler(); 
+			
 				po.produire(BINCOND);
-				po.produire(pileRep.depiler());
-				pileRep.empiler(po.getIpo());
-				po.modifier(repbsif, po.getIpo()+1);
+				po.produire(adrAncienBincond);
+			
+				pileRep.empiler(po.getIpo()); 
+			
+				po.modifier(adrBsifauxReme, po.getIpo() + 1);
 				break;
 			case 37:
-				int ipo =po.getIpo()+1;
-				int adresse = pileRep.depiler();
-				do {
-					tmp = po.getElt(adresse);
-					po.modifier(adresse, ipo);
-					adresse = tmp;
-				} while (adresse > 0);
+				int destinationFinale = po.getIpo() + 1;
+				int adrActuelle = pileRep.depiler();
+				while (adrActuelle != 0) {
+					int adrPrecedente = po.getElt(adrActuelle);
+					po.modifier(adrActuelle, destinationFinale);
+					adrActuelle = adrPrecedente;
+				}
 				break;
 			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
