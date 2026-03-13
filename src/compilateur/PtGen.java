@@ -363,24 +363,30 @@ public class PtGen {
 				break;
 			case 36:
 				int adrBsifauxReme = pileRep.depiler(); 
-				int adrAncienBincond = pileRep.depiler(); 
-			
-				po.produire(BINCOND);
-				po.produire(adrAncienBincond);
-			
-				pileRep.empiler(po.getIpo()); 
-			
-				po.modifier(adrBsifauxReme, po.getIpo() + 1);
-				break;
+    			int adrAncienBincond = pileRep.depiler(); 
+
+    			po.produire(BINCOND);
+    			po.produire(adrAncienBincond);
+
+    			pileRep.empiler(po.getIpo()); 
+
+    			po.modifier(adrBsifauxReme, po.getIpo() + 1);
+    			break;
 			case 37:
 				int destinationFinale = po.getIpo() + 1;
-				int adrActuelle = pileRep.depiler();
+    			int adrActuelle = pileRep.depiler();
+
+				if (po.getElt(adrActuelle) == -1) {
+					po.modifier(adrActuelle, destinationFinale);
+					adrActuelle = pileRep.depiler();
+				}
+
 				while (adrActuelle != 0) {
 					int adrPrecedente = po.getElt(adrActuelle);
 					po.modifier(adrActuelle, destinationFinale);
 					adrActuelle = adrPrecedente;
 				}
-				break;
+   				break;
 			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
 				if (idIdent == 0) {
