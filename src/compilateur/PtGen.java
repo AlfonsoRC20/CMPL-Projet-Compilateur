@@ -59,7 +59,7 @@ public class PtGen {
 	// contrôle de type : type de l'expression compilee
 	private static int tCour;
 
-	private static int nbrVarGlobale,idIdent;
+	private static int nbrVarGlobale,idIdent,nbrVarLocale,nbrparam;
 
 	// TABLE DES SYMBOLES
 	// ----------------------
@@ -193,6 +193,8 @@ public class PtGen {
 
 		// TODO si necessaire
 		nbrVarGlobale = 0;
+		nbrVarLocale = 0;
+		nbrparam = 0;
 
 	}
 
@@ -313,20 +315,27 @@ public class PtGen {
 				break;
 			case 26:// gestion des constantes
 				if(presentIdent(1)!=0){
-					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja ");
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja présente");
 				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
 				break;
 			case 27://gestion des variables dans la table des symboles
 				if (presentIdent(1)!=0) {
 					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
 				}else {
-					placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, nbrVarGlobale);
-					nbrVarGlobale ++;
+					if(bc== 1){
+						placeIdent(UtilLex.numIdCourant, VARGLOBALE, tCour, nbrVarGlobale);
+						nbrVarGlobale ++;
+					}else{
+						placeIdent(UtilLex.numIdCourant, VARLOCALE, tCour, nbrVarLocale+(2+nbrparam));
+						nbrVarLocale++;
+					}
 				}
 				break;
 			case 28:// gestion des variables (reserver nbr)
 				po.produire(RESERVER);
-				po.produire(nbrVarGlobale);
+				if (bc==1) {	
+					po.produire(nbrVarGlobale);
+				}else po.produire(nbrVarLocale);
 				break;
 			case 29://entier quelconque
 				vCour = UtilLex.valEnt;
@@ -348,7 +357,7 @@ public class PtGen {
                     po.modifier(pileRep.depiler(), po.getIpo()+1);
                     break;
 	//gestion du tant que
-			case 33: // emiler ipo +1
+			case 33: // empiler ipo +1
 				pileRep.empiler(po.getIpo()+1);
 				break;
 			case 34:
@@ -372,7 +381,7 @@ public class PtGen {
 
     			po.modifier(adrBsifauxReme, po.getIpo() + 1);
     			break;
-			case 37:
+			case 37://fin du cond
 				int destinationFinale = po.getIpo() + 1;
     			int adrActuelle = pileRep.depiler();
 
@@ -387,6 +396,16 @@ public class PtGen {
 					adrActuelle = adrPrecedente;
 				}
    				break;
+			case 38://BINCOND après les variables globales
+				po.produire(BINCOND);
+				po.produire(-1);
+				pileRep.empiler(po.getIpo());
+				break;
+			case 39://modification du BINCOND du case 38
+				if (bc==1) {
+					po.modifier(pileRep.depiler(), po.getIpo()+1);
+				}
+				break;
 			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
 				if (idIdent == 0) {
@@ -403,8 +422,44 @@ public class PtGen {
 					po.produire(tabSymb[idIdent].info);
 				}
 				break;
+			case 42://ajout de la Proc dans la table des symboles
+				if(presentIdent(1)!=0){
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
+				}else{
+					placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, po.getIpo()+1);
+					placeIdent(-1,PRIVEE,NEUTRE,-1);
+					bc=it+1;
+				}
+				break;
+			case 43://gestion des parametre fixes
+				if (presentIdent(bc)!=0) {
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
+				}else{
+					placeIdent(UtilLex.numIdCourant, PARAMFIXE, tCour, nbrparam);
+					nbrparam ++;
+				}
+				break;
+			case 44://gestion des parametre mod
+				if (presentIdent(bc)!=0) {
+					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
+				}else{
+					placeIdent(UtilLex.numIdCourant, PARAMMOD, tCour, nbrparam);
+					nbrparam ++;
+				}
+				break;
+			case 45://modification de la case info pour mettre le nombre de parametres
+				tabSymb[bc-1].info = nbrparam;
+				break;
+			case 46:
+
+				break;
 			case 254://fin de corps
-				po.produire(ARRET);
+				if (bc== 1){
+					po.produire(ARRET);
+				}else{
+					po.produire(RETOUR);
+					po.produire(nbrparam);
+				}
 				break;
 			case 255:
 				// En fin de compilation :

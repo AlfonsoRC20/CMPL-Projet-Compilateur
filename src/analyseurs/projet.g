@@ -66,7 +66,7 @@ unitmodule:
 	'module' ident ':' declarations;
 
 declarations:
-	partiedef? partieref? consts? vars? decprocs?;
+	partiedef? partieref? consts? vars? {PtGen.pt(38);} decprocs?;
 
 partiedef:
 	'def' ident (',' ident)* ptvg;
@@ -92,29 +92,29 @@ type:
 decprocs: (decproc ptvg)+;
 
 decproc:
-	'proc' ident parfixe? parmod? consts? vars? corps;
+	'proc' ident{PtGen.pt(42)} parfixe? parmod?{PtGen.pt(45);} consts? vars? corps;
 
 ptvg:
 	';'
 	|;
 
 corps:
-	'debut' instructions 'fin'{PtGen.pt(254);};
+	'debut'{PtGen.pt(39);} instructions 'fin'{PtGen.pt(254);};
 
 parfixe:
-	'fixe' '(' pf (';' pf)* ')';
+	'fixe' '(' pf  (';' pf)* ')';
 
 pf:
-	type ident (',' ident)*;
+	type ident {PtGen.pt(43);}(',' ident{PtGen.pt(43);})*;
 
 parmod:
-	'mod' '(' pm (';' pm)* ')';
+	'mod' '(' pm  (';' pm)* ')';
 
 pm:
-	type ident (',' ident)*;
+	type ident {PtGen.pt(44);}(',' ident{PtGen.pt(44);})*;
 
 instructions:
-	instruction (';' instruction)*;
+	instruction  (';' instruction)*;
 
 instruction:
 	inssi
