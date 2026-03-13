@@ -18,7 +18,7 @@ import libIO.*;
 public class PtGen {
 
 	// Renseigner ici un nom pour le trinome, constitué UNIQUEMENT DE LETTRES
-	public static String trinome = "A COMPLETER"; // TODO
+	public static String trinome = "PAILLIERRAMIREZCAETANO";
 
 	// taille max de la table des symboles
 	private static final int MAXSYMB = 300;
