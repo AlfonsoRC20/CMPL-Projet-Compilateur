@@ -506,12 +506,13 @@ public class PtGen {
 					po.produire(ARRET);
 				}else{
 					nbrparam = tabSymb[bc-2].info;
-					for(int i = bc;i<i+nbrparam;i++){
+					for(int i = bc;i<nbrparam;i++){
 						tabSymb[i].code = -1;
 					}
 					it = bc+(nbrparam-1);
 					po.produire(RETOUR);
 					po.produire(nbrparam);
+					//TODO trouver la méthode pour modifier bc pour que celui ci correspond a l'endroit ou été appelé la proc
 				}
 				break;
 			case 255:
