@@ -1,0 +1,12 @@
+case 48://compte le nombre de parametre fix et de paramètre attendu
+				int nbparamAt = tabSymb[idIdent+1].info;
+				nbparamfixAt = 0;
+				nbparamModAt = 0;
+				for(int i = idIdent+2;i<i+nbparamAt;i++){
+					if(tabSymb[i].categorie == PARAMFIXE){
+						nbparamfixAt ++;
+					}else{
+						nbparamModAt ++;
+					}
+				}
+				break;
