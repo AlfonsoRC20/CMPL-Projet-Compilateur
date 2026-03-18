@@ -59,7 +59,7 @@ public class PtGen {
 	// contrôle de type : type de l'expression compilee
 	private static int tCour;
 
-	private static int nbrVarGlobale,idIdent,nbrVarLocale,nbrparam;
+	private static int nbrVarGlobale,idIdent,nbrVarLocale,nbrparam,nbparamAt,nbparamRe;
 
 	// TABLE DES SYMBOLES
 	// ----------------------
@@ -195,7 +195,6 @@ public class PtGen {
 		nbrVarGlobale = 0;
 		nbrVarLocale = 0;
 		nbrparam = 0;
-
 	}
 
 	/**
@@ -222,7 +221,7 @@ public class PtGen {
 				tCour = BOOL;
 				break;
 			case 4://empilement de la valeur de la constante ou de la variable
-				tmp = presentIdent(1);
+				tmp = presentIdent(bc);
 				if (tabSymb[tmp].categorie == CONSTANTE) {
 					po.produire(EMPILER);
 					po.produire(tabSymb[tmp].info);
@@ -296,7 +295,7 @@ public class PtGen {
 				vCour = FAUX;
 				break;
 			case 24:// gestion du lire
-				tmp = presentIdent(1);
+				tmp = presentIdent(bc);
 				if (tabSymb[tmp].categorie == CONSTANTE) {
 					UtilLex.messErr("une constante ne pas être modifier");
 					break;
@@ -402,9 +401,7 @@ public class PtGen {
 				pileRep.empiler(po.getIpo());
 				break;
 			case 39://modification du BINCOND du case 38
-				if (bc==1) {
 					po.modifier(pileRep.depiler(), po.getIpo()+1);
-				}
 				break;
 			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
@@ -442,6 +439,7 @@ public class PtGen {
 			case 44://gestion des parametre mod
 				if (presentIdent(bc)!=0) {
 					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
+					break;
 				}else{
 					placeIdent(UtilLex.numIdCourant, PARAMMOD, tCour, nbrparam);
 					nbrparam ++;
@@ -451,12 +449,59 @@ public class PtGen {
 				tabSymb[bc-1].info = nbrparam;
 				break;
 			case 46:
-				
+				po.produire(APPEL);
+				po.produire(tabSymb[idIdent].info);
+				po.produire(tabSymb[idIdent+1].info);
+				bc = idIdent + 2;
+				break;
+			case 47://gestion des param Mod dans un appel
+				tmp=presentIdent(bc);
+				if (tabSymb[tmp].type != tabSymb[idIdent+2+nbparamRe].type) {
+					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
+				}
+				if (tabSymb[idIdent+2+nbparamRe].categorie == PARAMFIXE) {
+					UtilLex.messErr("le nombre de paramètre fixe entrés dans l'appel est incorrect");
+				}
+				if (tabSymb[tmp].categorie == VARGLOBALE) {
+					po.produire(EMPILERADG);
+					po.produire(tabSymb[tmp].info);
+				}else if (tabSymb[tmp].categorie == CONSTANTE) {
+					UtilLex.messErr("Une constante ne peut pas être un paramètre modifiable");
+				}else{
+					po.produire(EMPILERADL);
+					po.produire(tabSymb[tmp].info);
+					if(tabSymb[tmp].categorie==PARAMMOD){
+						po.produire(1);
+					}else po.produire(0);
+				}
+				nbparamRe ++;
+				break;
+			/* case 48://compte le nombre de parametre fix et de paramètre attendu
+				int nbparamAt = tabSymb[idIdent+1].info;
+				nbparamfixAt = 0;
+				nbparamModAt = 0;
+				for(int i = idIdent+2;i<i+nbparamAt;i++){
+					if(tabSymb[i].categorie == PARAMFIXE){
+						nbparamfixAt ++;
+					}else{
+						nbparamModAt ++;
+					}
+				}
+				break; */
+			case 49:
+				if(tCour != tabSymb[idIdent+2+nbparamRe].type){
+					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
+				}
+				if (tabSymb[idIdent+2+nbparamRe].categorie == PARAMMOD) {
+					UtilLex.messErr("le nombre de paramètre fixe entrés dans l'appel est incorrect");
+				}
+				nbparamRe++;
 				break;
 			case 254://fin de corps
 				if (bc== 1){
 					po.produire(ARRET);
 				}else{
+					
 					po.produire(RETOUR);
 					po.produire(nbrparam);
 				}

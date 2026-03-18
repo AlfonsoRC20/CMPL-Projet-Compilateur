@@ -146,10 +146,10 @@ affouappel:
 	ident {PtGen.pt(40);} (':=' expression {PtGen.pt(41);}| (effixes (effmods)?)?);
 
 effixes:
-	'(' (expression (',' expression)*)? ')';
+	'(' (expression {PtGen.pt(49);} (',' expression {PtGen.pt(49);})*)? ')';
 
 effmods:
-	'(' (ident (',' ident)*)? ')';
+	'(' (ident {PtGen.pt(47);} (',' ident{PtGen.pt(47);})*)? ')';
 
 expression: (exp1) ({PtGen.pt(15);}'ou' exp1 {PtGen.pt(15);} {PtGen.pt(17);})*;
 
