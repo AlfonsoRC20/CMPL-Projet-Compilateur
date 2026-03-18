@@ -92,7 +92,7 @@ type:
 decprocs: (decproc ptvg)+;
 
 decproc:
-	'proc' ident{PtGen.pt(42)} parfixe? parmod?{PtGen.pt(45);} consts? vars? corps;
+	'proc' ident{PtGen.pt(42);} parfixe? parmod?{PtGen.pt(45);} consts? vars? corps;
 
 ptvg:
 	';'
@@ -143,7 +143,7 @@ ecriture:
 	'ecrire' '(' expression {PtGen.pt(25);}(',' expression{PtGen.pt(25);})* ')';
 
 affouappel:
-	ident {PtGen.pt(40);} (':=' expression {PtGen.pt(41);}| (effixes (effmods)?)?);
+	ident {PtGen.pt(40);} (':=' expression {PtGen.pt(41);}| (effixes (effmods)?)?) {PtGen.pt(46);};
 
 effixes:
 	'(' (expression {PtGen.pt(49);} (',' expression {PtGen.pt(49);})*)? ')';
