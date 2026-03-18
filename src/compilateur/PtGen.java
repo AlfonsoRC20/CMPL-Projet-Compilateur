@@ -290,10 +290,10 @@ public class PtGen {
 				vCour = -UtilLex.valEnt;
 				break;
 			case 22:
-				vCour = FAUX;
+				vCour = VRAI;
 				break;
 			case 23:
-				vCour = VRAI;
+				vCour = FAUX;
 				break;
 			case 24:// gestion du lire
 				tmp = presentIdent(1);
@@ -451,7 +451,7 @@ public class PtGen {
 				tabSymb[bc-1].info = nbrparam;
 				break;
 			case 46:
-
+				
 				break;
 			case 254://fin de corps
 				if (bc== 1){
