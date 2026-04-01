@@ -206,6 +206,7 @@ public class PtGen {
 	public static void pt(int numGen) {
 		int tmp;
 		int repbsif;
+		int bp;
 		switch (numGen) {
 			case 0:
 				initialisations();
@@ -503,10 +504,11 @@ public class PtGen {
 				break;
 			case 47://gestion des param Mod dans un appel
 				tmp=presentIdent(1);
-				if (tabSymb[tmp].type != tabSymb[bc+nbparamRe].type) {
+				bp = idIdent+2;
+				if (tabSymb[tmp].type != tabSymb[bp+nbparamRe].type) {
 					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
 				}
-				if (tabSymb[bc+nbparamRe].categorie == PARAMFIXE) {
+				if (tabSymb[bp+nbparamRe].categorie == PARAMFIXE) {
 					UtilLex.messErr("le nombre de paramètre fixe entrés inférieur a ce qui est attendu");
 				}
 				if (tabSymb[tmp].categorie == VARGLOBALE) {
@@ -524,10 +526,11 @@ public class PtGen {
 				nbparamRe ++;
 				break;
 			case 49://gestion des param fixe dans un appel
-				if(tCour != tabSymb[bc+nbparamRe].type){
+				bp = idIdent+2;
+				if(tCour != tabSymb[bp+nbparamRe].type){
 					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
 				}
-				if (tabSymb[bc+nbparamRe].categorie == PARAMMOD) {
+				if (tabSymb[bp+nbparamRe].categorie == PARAMMOD) {
 					UtilLex.messErr("le nombre de paramètre fixe entrés est plus grand que ce qui est attendu");
 				}
 				nbparamRe++;

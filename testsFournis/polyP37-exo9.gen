@@ -1,0 +1,42 @@
+FICHIER testsFournis\polyP37-exo9.gen : 
+
+   1  reserver        5
+   3  bincond        57
+   5  contenul        0   0
+   8  contenul        0   0
+  11  mul       
+  12  affecterl       1   1
+  15  retour          2
+  17  reserver        2
+  19  contenul        2   0
+  22  contenul        0   0
+  25  sous      
+  26  empileradl      7   0
+  29  appel           5   2
+  32  contenul        3   0
+  35  contenul        1   0
+  38  sous      
+  39  empileradl      8   0
+  42  appel           5   2
+  45  contenul        7   0
+  48  contenul        8   0
+  51  add       
+  52  affecterl       4   1
+  55  retour          5
+  57  lirent    
+  58  affecterg       0
+  60  lirent    
+  61  affecterg       1
+  63  lirent    
+  64  affecterg       2
+  66  lirent    
+  67  affecterg       3
+  69  contenug        0
+  71  contenug        1
+  73  contenug        2
+  75  contenug        3
+  77  empileradg      4
+  79  appel          17   5
+  82  contenug        4
+  84  ecrent    
+  85  arret     
