@@ -243,15 +243,19 @@ public class PtGen {
 				break;
 			case 5: // addition
 				po.produire(ADD);
+				tCour = ENT;
 				break;
 			case 6:// soustraction
 				po.produire(SOUS);
+				tCour = ENT;
 				break;
 			case 7: // multiplication
 				po.produire(MUL);
+				tCour = ENT;
 				break;
 			case 8: //division
 				po.produire(DIV);
+				tCour = ENT;
 				break;
 			case 9: // '='
 				po.produire(EG);
