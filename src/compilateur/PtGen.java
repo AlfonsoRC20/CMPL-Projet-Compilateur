@@ -221,11 +221,11 @@ public class PtGen {
 				tCour = BOOL;
 				break;
 			case 4://empilement de la valeur de la constante ou de la variable
-				tmp = presentIdent(bc);
+				tmp = presentIdent(1);
 				if (tabSymb[tmp].categorie == CONSTANTE) {
 					po.produire(EMPILER);
 					po.produire(tabSymb[tmp].info);
-				}else if( bc== 1) {
+				}else if(bc== 1) {
 					po.produire(CONTENUG);
 					po.produire(tabSymb[tmp].info);
 				}else{
@@ -301,9 +301,9 @@ public class PtGen {
 				vCour = FAUX;
 				break;
 			case 24:// gestion du lire
-				tmp = presentIdent(bc);
-				if (tabSymb[tmp].categorie == CONSTANTE) {
-					UtilLex.messErr("une constante ne pas être modifier");
+				tmp = presentIdent(1);
+				if (tabSymb[tmp].categorie == CONSTANTE || tabSymb[tmp].categorie == PARAMFIXE) {
+					UtilLex.messErr("une constante ou un paramètre fixe ne pas être modifier");
 					break;
 				}else if (tabSymb[tmp].type == ENT) {
 					po.produire(LIRENT);
@@ -321,7 +321,6 @@ public class PtGen {
 						po.produire(0);
 					}else po.produire(1);
 				}
-				
 				break;
 			case 25:// gestion du ecrire
 				if (tCour == ENT) {
@@ -417,7 +416,10 @@ public class PtGen {
 				pileRep.empiler(po.getIpo());
 				break;
 			case 39://modification du BINCOND du case 38
-					po.modifier(pileRep.depiler(), po.getIpo()+1);
+				if (bc == 1) {
+					int ipomodif = pileRep.depiler();
+					po.modifier(ipomodif, po.getIpo()+1);
+				}
 				break;
 			case 40:// sauvegarde de l'id pour l'affection ou l'appel
 				idIdent = presentIdent(1);
@@ -427,12 +429,27 @@ public class PtGen {
 				}
 				break;
 			case 41://affectation
-				if(tabSymb[idIdent].categorie == CONSTANTE){
-					UtilLex.messErr("une constante ne pas être modifier");
-					break;
-				}else{
-					po.produire(AFFECTERG);
-					po.produire(tabSymb[idIdent].info);
+				switch (tabSymb[idIdent].categorie) {
+					case CONSTANTE:
+						UtilLex.messErr("une constante ne pas être modifier");
+						break;
+					case PARAMFIXE:
+						UtilLex.messErr("un paramètre fixe ne pas être modifier");
+						break;
+					case PARAMMOD:
+						po.produire(AFFECTERL);
+						po.produire(tabSymb[idIdent].info);
+						po.produire(1);
+						break;
+					case VARLOCALE:
+						po.produire(AFFECTERL);
+						po.produire(tabSymb[idIdent].info);
+						po.produire(0);
+						break;
+					default:
+						po.produire(AFFECTERG);
+						po.produire(tabSymb[idIdent].info);
+						break;
 				}
 				break;
 			case 42://ajout de la Proc dans la table des symboles
@@ -468,7 +485,6 @@ public class PtGen {
 				po.produire(APPEL);
 				po.produire(tabSymb[idIdent].info);
 				po.produire(tabSymb[idIdent+1].info);
-				bc = idIdent + 2;
 				break;
 			case 47://gestion des param Mod dans un appel
 				tmp=presentIdent(bc);
@@ -512,7 +528,7 @@ public class PtGen {
 					it = bc+(nbrparam-1);
 					po.produire(RETOUR);
 					po.produire(nbrparam);
-					//TODO trouver la méthode pour modifier bc pour que celui ci correspond a l'endroit ou été appelé la proc
+					bc =1;
 				}
 				break;
 			case 255:
