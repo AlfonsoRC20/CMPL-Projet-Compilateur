@@ -59,7 +59,7 @@ public class PtGen {
 	// contrôle de type : type de l'expression compilee
 	private static int tCour;
 
-	private static int nbrVarGlobale,idIdent,nbrVarLocale,nbrparam,nbparamAt,nbparamRe;
+	private static int nbrVarGlobale,idIdent,nbrVarLocale,nbrparam,nbparamRe;
 
 	// TABLE DES SYMBOLES
 	// ----------------------
@@ -469,6 +469,7 @@ public class PtGen {
 					placeIdent(-1,PRIVEE,NEUTRE,-1);
 					bc=it+1;
 				}
+				nbrparam = 0;
 				break;
 			case 43://gestion des parametre fixes
 				if (presentIdent(bc)!=0) {
@@ -494,6 +495,7 @@ public class PtGen {
 				po.produire(APPEL);
 				po.produire(tabSymb[idIdent].info);
 				po.produire(tabSymb[idIdent+1].info);
+				nbparamRe = 0;
 				break;
 			case 47://gestion des param Mod dans un appel
 				tmp=presentIdent(1);
