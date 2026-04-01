@@ -1,0 +1,20 @@
+FICHIER testperso\polyP37-exo9-SA.gen : 
+
+   1  reserver        5
+   3  bincond        17
+   5  contenul        0   0
+   8  contenul        0   0
+  11  mul       
+  12  affecterl       1   1
+  15  retour          2
+  17  lirent    
+  18  affecterg       0
+  20  lirent    
+  21  affecterg       1
+  23  lirent    
+  24  affecterg       2
+  26  lirent    
+  27  affecterg       3
+  29  contenug        4
+  31  ecrent    
+  32  arret     

@@ -222,10 +222,14 @@ public class PtGen {
 				break;
 			case 4://empilement de la valeur de la constante ou de la variable
 				tmp = presentIdent(1);
+				if (tmp == 0) {
+					UtilLex.messErr("identificateur non déclaré");
+					break;
+				}
 				if (tabSymb[tmp].categorie == CONSTANTE) {
 					po.produire(EMPILER);
 					po.produire(tabSymb[tmp].info);
-				}else if(bc== 1) {
+				}else if(tabSymb[tmp].categorie == VARGLOBALE) {
 					po.produire(CONTENUG);
 					po.produire(tabSymb[tmp].info);
 				}else{
@@ -301,17 +305,22 @@ public class PtGen {
 				vCour = FAUX;
 				break;
 			case 24:// gestion du lire
+				//afftabSymb();
 				tmp = presentIdent(1);
+				if (tmp == 0) {
+					UtilLex.messErr("identificateur non déclaré");
+					break;
+				}
 				if (tabSymb[tmp].categorie == CONSTANTE || tabSymb[tmp].categorie == PARAMFIXE) {
 					UtilLex.messErr("une constante ou un paramètre fixe ne pas être modifier");
 					break;
-				}else if (tabSymb[tmp].type == ENT) {
+				}
+				if (tabSymb[tmp].type == ENT) {
 					po.produire(LIRENT);
 				}else{
 					po.produire(LIREBOOL);
 				}
-
-				if (bc == 1) {
+				if (tabSymb[tmp].categorie == VARGLOBALE) {
 					po.produire(AFFECTERG);
 					po.produire(tabSymb[tmp].info);
 				}else{
@@ -481,18 +490,18 @@ public class PtGen {
 			case 45://modification de la case info pour mettre le nombre de parametres
 				tabSymb[bc-1].info = nbrparam;
 				break;
-			case 46:
+			case 46://appel de procedure
 				po.produire(APPEL);
 				po.produire(tabSymb[idIdent].info);
 				po.produire(tabSymb[idIdent+1].info);
 				break;
 			case 47://gestion des param Mod dans un appel
-				tmp=presentIdent(bc);
+				tmp=presentIdent(1);
 				if (tabSymb[tmp].type != tabSymb[bc+nbparamRe].type) {
 					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
 				}
 				if (tabSymb[bc+nbparamRe].categorie == PARAMFIXE) {
-					UtilLex.messErr("le nombre de paramètre fixe entrés dans l'appel est incorrect");
+					UtilLex.messErr("le nombre de paramètre fixe entrés inférieur a ce qui est attendu");
 				}
 				if (tabSymb[tmp].categorie == VARGLOBALE) {
 					po.produire(EMPILERADG);
@@ -513,7 +522,7 @@ public class PtGen {
 					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
 				}
 				if (tabSymb[bc+nbparamRe].categorie == PARAMMOD) {
-					UtilLex.messErr("le nombre de paramètre fixe entrés dans l'appel est incorrect");
+					UtilLex.messErr("le nombre de paramètre fixe entrés est plus grand que ce qui est attendu");
 				}
 				nbparamRe++;
 				break;
@@ -521,8 +530,9 @@ public class PtGen {
 				if (bc== 1){
 					po.produire(ARRET);
 				}else{
-					nbrparam = tabSymb[bc-2].info;
-					for(int i = bc;i<nbrparam;i++){
+					//afftabSymb();
+					nbrparam = tabSymb[bc-1].info;
+					for(int i = bc;i<bc+nbrparam;i++){
 						tabSymb[i].code = -1;
 					}
 					it = bc+(nbrparam-1);
