@@ -197,6 +197,24 @@ public class PtGen {
 		nbrparam = 0;
 	}
 
+	private static int exigerIdentDeclare() {
+		int i = presentIdent(1);
+		if (i == 0) {
+			UtilLex.messErr("identificateur non déclaré");
+		}
+		return i;
+	}
+	private static void declarerSiAbsentBlocCourant(int cat, int type, int info, String messageSiPresent) {
+        if (presentIdent(bc) != 0) {
+            UtilLex.messErr(messageSiPresent);
+        } else {
+            placeIdent(UtilLex.numIdCourant, cat, type, info);
+        }
+    }
+	private static void produireOpBinaire(int opcode, int typeResultat) {
+		po.produire(opcode);
+		tCour = typeResultat;
+	}
 	/**
 	 * code des points de generation A COMPLETER
 	 * -----------------------------------------
@@ -222,65 +240,53 @@ public class PtGen {
 				tCour = BOOL;
 				break;
 			case 4://empilement de la valeur de la constante ou de la variable
-				tmp = presentIdent(1);
-				if (tmp == 0) {
-					UtilLex.messErr("identificateur non déclaré");
-					break;
-				}
+				tmp = exigerIdentDeclare();
 				if (tabSymb[tmp].categorie == CONSTANTE) {
 					po.produire(EMPILER);
 					po.produire(tabSymb[tmp].info);
-				}else if(tabSymb[tmp].categorie == VARGLOBALE) {
+				} else if (tabSymb[tmp].categorie == VARGLOBALE) {
 					po.produire(CONTENUG);
 					po.produire(tabSymb[tmp].info);
-				}else{
+				} else {
 					po.produire(CONTENUL);
 					po.produire(tabSymb[tmp].info);
 					if (tabSymb[tmp].categorie == PARAMFIXE || tabSymb[tmp].categorie == VARLOCALE) {
 						po.produire(0);
-					}else po.produire(1);
-				} 
+					} else {
+						po.produire(1);
+					}
+				}
 				tCour = tabSymb[tmp].type;
 				break;
 			case 5: // addition
-				po.produire(ADD);
-				tCour = ENT;
+				produireOpBinaire(ADD, ENT);
 				break;
 			case 6:// soustraction
-				po.produire(SOUS);
-				tCour = ENT;
+				produireOpBinaire(SOUS, ENT);
 				break;
-			case 7: // multiplication
-				po.produire(MUL);
-				tCour = ENT;
+			case 7://multiplication
+				produireOpBinaire(MUL, ENT);
 				break;
-			case 8: //division
-				po.produire(DIV);
-				tCour = ENT;
+			case 8://division
+				produireOpBinaire(DIV, ENT);
 				break;
-			case 9: // '='
-				po.produire(EG);
-				tCour = BOOL;
+			case 9:// egalité
+				produireOpBinaire(EG, BOOL);
 				break;
-			case 10: // '<>'
-				po.produire(DIFF);
-				tCour = BOOL;
+			case 10://différence
+				produireOpBinaire(DIFF, BOOL);
 				break;
-			case 11: // '>'
-				po.produire(SUP);
-				tCour = BOOL;
+			case 11:// supérieur
+				produireOpBinaire(SUP, BOOL);
 				break;
-			case 12:// '>='
-				po.produire(SUPEG);
-				tCour = BOOL;
+			case 12://supérieur ou egale
+				produireOpBinaire(SUPEG, BOOL);
 				break;
-			case 13:// '<'
-				po.produire(INF);
-				tCour = BOOL;
+			case 13://inferieur
+				produireOpBinaire(INF, BOOL);
 				break;
-			case 14:// '<='
-				po.produire(INFEG);
-				tCour = BOOL;
+			case 14://inférieure ou égale
+				produireOpBinaire(INFEG, BOOL);
 				break;
 			case 15:// vérification boolean
 				verifBool();
@@ -310,30 +316,28 @@ public class PtGen {
 				vCour = FAUX;
 				break;
 			case 24:// gestion du lire
-				//afftabSymb();
-				tmp = presentIdent(1);
-				if (tmp == 0) {
-					UtilLex.messErr("identificateur non déclaré");
-					break;
-				}
+				tmp = exigerIdentDeclare();
 				if (tabSymb[tmp].categorie == CONSTANTE || tabSymb[tmp].categorie == PARAMFIXE) {
-					UtilLex.messErr("une constante ou un paramètre fixe ne pas être modifier");
-					break;
+					UtilLex.messErr("une constante ou un paramètre fixe ne peut pas être modifié");
 				}
+			
 				if (tabSymb[tmp].type == ENT) {
 					po.produire(LIRENT);
-				}else{
+				} else {
 					po.produire(LIREBOOL);
 				}
+			
 				if (tabSymb[tmp].categorie == VARGLOBALE) {
 					po.produire(AFFECTERG);
 					po.produire(tabSymb[tmp].info);
-				}else{
+				} else {
 					po.produire(AFFECTERL);
 					po.produire(tabSymb[tmp].info);
 					if (tabSymb[tmp].categorie == VARLOCALE) {
 						po.produire(0);
-					}else po.produire(1);
+					} else {
+						po.produire(1);
+					}
 				}
 				break;
 			case 25:// gestion du ecrire
@@ -342,9 +346,12 @@ public class PtGen {
 				}else po.produire(ECRBOOL);
 				break;
 			case 26:// gestion des constantes
-				if(presentIdent(bc)!=0){
-					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja présente");
-				}else placeIdent(UtilLex.numIdCourant, CONSTANTE, tCour, vCour);
+				declarerSiAbsentBlocCourant(
+					CONSTANTE,
+					tCour,
+					vCour,
+					UtilLex.chaineIdent(UtilLex.numIdCourant) + " est déja présente"
+				);
 				break;
 			case 27://gestion des variables dans la table des symboles
 				if (presentIdent(bc)!=0) {
@@ -444,54 +451,56 @@ public class PtGen {
 				break;
 			case 41://affectation
 				switch (tabSymb[idIdent].categorie) {
-					case CONSTANTE:
-						UtilLex.messErr("une constante ne pas être modifier");
-						break;
-					case PARAMFIXE:
-						UtilLex.messErr("un paramètre fixe ne pas être modifier");
-						break;
-					case PARAMMOD:
-						po.produire(AFFECTERL);
-						po.produire(tabSymb[idIdent].info);
-						po.produire(1);
-						break;
-					case VARLOCALE:
-						po.produire(AFFECTERL);
-						po.produire(tabSymb[idIdent].info);
-						po.produire(0);
-						break;
-					default:
-						po.produire(AFFECTERG);
-						po.produire(tabSymb[idIdent].info);
-						break;
-				}
+            		case CONSTANTE:
+                	UtilLex.messErr("une constante ne pas être modifier");
+                	break;
+            	case PARAMFIXE:
+                	UtilLex.messErr("un paramètre fixe ne pas être modifier");
+                	break;
+            	case PARAMMOD:
+                	po.produire(AFFECTERL);
+                	po.produire(tabSymb[idIdent].info);
+                	po.produire(1);
+                	break;
+            	case VARLOCALE:
+                	po.produire(AFFECTERL);
+                	po.produire(tabSymb[idIdent].info);
+                	po.produire(0);
+                	break;
+            	default:
+                	po.produire(AFFECTERG);
+                	po.produire(tabSymb[idIdent].info);
+                	break;
+        		}
 				break;
 			case 42://ajout de la Proc dans la table des symboles
-				if(presentIdent(1)!=0){
-					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
-				}else{
-					placeIdent(UtilLex.numIdCourant, PROC, NEUTRE, po.getIpo()+1);
-					placeIdent(-1,PRIVEE,NEUTRE,-1);
-					bc=it+1;
-				}
+				declarerSiAbsentBlocCourant(
+					PROC,
+					NEUTRE,
+					po.getIpo() + 1,
+					UtilLex.chaineIdent(UtilLex.numIdCourant) + " est déja déclaré"
+				);
+				placeIdent(-1, PRIVEE, NEUTRE, -1);
+				bc = it + 1;
 				nbrparam = 0;
 				break;
 			case 43://gestion des parametre fixes
-				if (presentIdent(bc)!=0) {
-					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
-				}else{
-					placeIdent(UtilLex.numIdCourant, PARAMFIXE, tCour, nbrparam);
-					nbrparam ++;
-				}
+				declarerSiAbsentBlocCourant(
+					PARAMFIXE,
+					tCour,
+					nbrparam,
+					UtilLex.chaineIdent(UtilLex.numIdCourant) + " est déja déclaré"
+				);
+				nbrparam++;
 				break;
 			case 44://gestion des parametre mod
-				if (presentIdent(bc)!=0) {
-					UtilLex.messErr(UtilLex.chaineIdent(UtilLex.numIdCourant)+" est déja déclaré");
-					break;
-				}else{
-					placeIdent(UtilLex.numIdCourant, PARAMMOD, tCour, nbrparam);
-					nbrparam ++;
-				}
+				declarerSiAbsentBlocCourant(
+					PARAMMOD,
+					tCour,
+					nbrparam,
+					UtilLex.chaineIdent(UtilLex.numIdCourant) + " est déja déclaré"
+				);
+				nbrparam++;
 				break;
 			case 45://modification de la case info pour mettre le nombre de parametres
 				tabSymb[bc-1].info = nbrparam;
@@ -503,7 +512,7 @@ public class PtGen {
 				nbparamRe = 0;
 				break;
 			case 47://gestion des param Mod dans un appel
-				tmp=presentIdent(1);
+				tmp=exigerIdentDeclare();
 				bp = idIdent+2;
 				if (tabSymb[tmp].type != tabSymb[bp+nbparamRe].type) {
 					UtilLex.messErr("le type de l'expression ne correspond pas au type attendu");
